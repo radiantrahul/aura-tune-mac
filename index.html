@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101116">
+  <meta name="description" content="Download Aura Tune for Mac, a music player with personal mixes, synchronized lyrics, album-color lighting, and Aura Intelligence playlist creation.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Aura Tune for Mac — Music, tuned to you">
+  <meta property="og:description" content="Discover music, follow synchronized lyrics, and ask Santa in Aura Intelligence to help build a mood playlist.">
+  <meta property="og:url" content="https://radiantrahul.github.io/aura-tune-mac/">
+  <link rel="canonical" href="https://radiantrahul.github.io/aura-tune-mac/">
+  <link rel="icon" href="assets/aura-tune-icon.jpg">
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Aura Tune",
+      "operatingSystem": "macOS",
+      "applicationCategory": "MultimediaApplication",
+      "description": "Aura Tune for Mac is a music player with personal mixes, synchronized lyrics, ambient album lighting, and Aura Intelligence playlist creation.",
+      "featureList": ["Music discovery by language", "Synchronized lyrics", "Aura Intelligence mood playlists", "Mac menu bar playback controls"]
+    }
+  </script>
+  <title>Aura Tune for Mac — Music Player</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #101116;
+      --panel: rgba(34, 36, 47, .72);
+      --panel-bright: rgba(49, 51, 65, .72);
+      --line: rgba(255, 255, 255, .11);
+      --text: #f6f5fa;
+      --muted: #a4a7b6;
+      --mint: #a9f4ed;
+      --blue: #85b9ff;
+      --violet: #ad92ff;
+      --warm: #ffc38a;
+      --radius: 28px;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; background: var(--bg); }
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(ellipse at 8% 15%, rgba(80, 115, 199, .15), transparent 36rem),
+        radial-gradient(ellipse at 96% 38%, rgba(168, 91, 149, .12), transparent 34rem),
+        radial-gradient(ellipse at 43% 78%, rgba(63, 164, 149, .10), transparent 30rem),
+        var(--bg);
+      overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .ambient {
+      position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+      background: radial-gradient(30rem 26rem at var(--px, 78%) var(--py, 28%), rgba(113, 108, 210, .09), transparent 70%);
+      transition: background-position .35s ease;
+    }
+    .wrap { width: min(1200px, calc(100% - 48px)); margin: auto; }
+    .glass {
+      border: 1px solid var(--line);
+      background: linear-gradient(145deg, rgba(255,255,255,.09), rgba(255,255,255,.025) 50%, rgba(255,255,255,.045));
+      box-shadow: 0 24px 90px rgba(0,0,0,.28), inset 0 1px rgba(255,255,255,.09);
+      backdrop-filter: blur(24px) saturate(140%);
+      -webkit-backdrop-filter: blur(24px) saturate(140%);
+    }
+    .nav { height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 22px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; font-size: 17px; font-weight: 680; letter-spacing: -.035em; }
+    .brand img { width: 39px; height: 39px; border-radius: 13px; object-fit: cover; box-shadow: 0 5px 24px rgba(81, 160, 255, .2); }
+    .nav-links { display: flex; align-items: center; gap: 28px; color: var(--muted); font-size: 13px; }
+    .nav-links a { transition: color .2s ease; }
+    .nav-links a:hover { color: var(--text); }
+    .button {
+      display: inline-flex; justify-content: center; align-items: center; gap: 10px;
+      border: 1px solid rgba(255,255,255,.16); border-radius: 999px; padding: 13px 19px;
+      color: #11151b; font-weight: 700; font-size: 13px;
+      background: linear-gradient(135deg, #c4fff7, #8cbbff);
+      box-shadow: 0 8px 32px rgba(126, 194, 255, .22), inset 0 1px rgba(255,255,255,.7);
+      transition: transform .22s cubic-bezier(.2,.8,.2,1), box-shadow .22s ease, filter .22s ease;
+    }
+    .button:hover { transform: translateY(-2px) scale(1.02); box-shadow: 0 12px 40px rgba(126,194,255,.32); filter: saturate(1.12); }
+    .button:active { transform: translateY(0) scale(.985); }
+    .button.ghost { color: var(--text); background: rgba(255,255,255,.055); box-shadow: inset 0 1px rgba(255,255,255,.08); }
+    .button svg { width: 17px; height: 17px; }
+    .hero { min-height: 680px; display: grid; grid-template-columns: 1fr 1.02fr; align-items: center; gap: clamp(30px, 6vw, 82px); padding: 42px 0 66px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 9px; color: #c5ccdf; font-size: 11px; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+    .eyebrow .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--mint); box-shadow: 0 0 18px var(--mint); }
+    h1 { margin: 22px 0 18px; max-width: 630px; font-size: clamp(48px, 6.2vw, 78px); line-height: .99; letter-spacing: -.075em; font-weight: 720; }
+    h1 span { color: transparent; background: linear-gradient(105deg, #fff 7%, #b7f5ec 49%, #aab5ff 91%); background-clip: text; -webkit-background-clip: text; }
+    .lead { max-width: 465px; margin: 0; color: #b6b8c5; font-size: 16px; line-height: 1.7; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 11px; margin-top: 29px; }
+    .download-meta { margin-top: 15px; color: #85899a; font-size: 11px; }
+    .note { display: inline-flex; align-items: center; gap: 7px; margin-top: 23px; color: #9a9eae; font-size: 11px; }
+    .note svg { width: 14px; height: 14px; color: var(--mint); }
+    .preview-wrap { position: relative; perspective: 1000px; }
+    .preview-glow { position: absolute; inset: 12% 5%; border-radius: 50%; background: linear-gradient(120deg, rgba(100,195,231,.3), rgba(160,120,255,.25)); filter: blur(78px); animation: breathe 7s ease-in-out infinite alternate; }
+    .app-window { position: relative; padding: 14px; border-radius: 25px; transform: rotateY(-5deg) rotateX(1deg); animation: float 8s ease-in-out infinite; overflow: hidden; }
+    .window-top { height: 30px; display: flex; align-items: center; gap: 6px; padding: 0 4px 11px; color: #a9adbc; font-size: 10px; }
+    .traffic { width: 8px; height: 8px; border-radius: 50%; background: #ff6159; box-shadow: 14px 0 #ffbd44, 28px 0 #32c957; margin-right: 27px; }
+    .window-top span:last-child { margin-left: auto; margin-right: auto; transform: translateX(-24px); }
+    .app-surface { min-height: 392px; display: grid; grid-template-columns: 118px 1fr; gap: 10px; }
+    .app-side, .app-main { border-radius: 15px; background: rgba(13,15,22,.68); border: 1px solid rgba(255,255,255,.06); }
+    .app-side { padding: 15px 10px; }
+    .side-user { display: flex; align-items: center; gap: 8px; margin-bottom: 27px; font-size: 10px; font-weight: 650; }
+    .side-user img { width: 24px; height: 24px; border-radius: 8px; object-fit: cover; }
+    .side-label { margin: 0 0 8px 4px; color: #73798b; font-size: 7px; font-weight: 700; letter-spacing: .12em; }
+    .side-item { padding: 7px 8px; margin: 3px 0; border-radius: 8px; color: #a8acbb; font-size: 9px; }
+    .side-item.active { color: white; background: rgba(255,255,255,.1); }
+    .app-main { padding: 17px 18px; min-width: 0; }
+    .mock-search { width: 61%; margin-left: auto; height: 29px; border-radius: 999px; padding: 8px 12px; background: rgba(255,255,255,.07); color: #969bac; font-size: 8px; }
+    .app-heading { margin: 12px 0 2px; font-size: 19px; font-weight: 680; letter-spacing: -.045em; }
+    .app-sub { color: #9298aa; font-size: 9px; }
+    .mock-title { margin: 19px 0 9px; font-size: 10px; font-weight: 650; }
+    .album-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+    .album { position: relative; aspect-ratio: 1 / .87; display: flex; align-items: end; overflow: hidden; padding: 9px; border-radius: 10px; background: linear-gradient(145deg, #3e8b9f, #d17358 62%, #20212a); }
+    .album:nth-child(2) { background: linear-gradient(135deg,#944e39,#252342 70%); }
+    .album:nth-child(3) { background: linear-gradient(145deg,#375e50,#c08a3d 72%,#392f3d); }
+    .album:before { content: ""; position: absolute; width: 64px; height: 64px; top: 0; right: -6px; border-radius: 50%; background: rgba(255,235,206,.21); filter: blur(2px); }
+    .album b { position: relative; z-index: 1; font-size: 9px; line-height: 1.2; text-shadow: 0 2px 7px rgba(0,0,0,.8); }
+    .mock-player { display: grid; grid-template-columns: 31px 1fr auto; align-items: center; gap: 9px; margin-top: 22px; padding: 9px; border-radius: 11px; background: rgba(255,255,255,.075); }
+    .mock-cover { width: 31px; height: 31px; border-radius: 7px; background: linear-gradient(135deg,#d57b53,#3b8294); }
+    .mock-track b,.mock-track small { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .mock-track b { font-size: 8px; }.mock-track small { margin-top: 3px; color: #959bab; font-size: 7px; }
+    .mock-controls { color: #d7e7eb; font-size: 12px; letter-spacing: 4px; }
+    .island { position: absolute; top: -22px; right: 22%; display: flex; align-items: center; gap: 9px; padding: 9px 14px; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; color: #f6f6fa; background: rgba(10,11,15,.78); box-shadow: 0 10px 40px rgba(0,0,0,.36); backdrop-filter: blur(18px); animation: island 5s ease-in-out infinite; }
+    .island img { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; }.island small { color: #a7aab8; font-size: 8px; }
+    .section { padding: 94px 0; }
+    .section-head { max-width: 650px; margin-bottom: 32px; }
+    h2 { margin: 12px 0 11px; font-size: clamp(32px, 4vw, 49px); line-height: 1.04; letter-spacing: -.065em; }
+    .section-head p { color: var(--muted); line-height: 1.65; font-size: 14px; margin: 0; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .feature { min-height: 210px; padding: 22px; border-radius: 21px; transition: transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s ease, background .35s ease; }
+    .feature:hover { transform: translateY(-5px); border-color: rgba(178,240,239,.28); background-color: rgba(255,255,255,.035); }
+    .feature-icon { width: 40px; height: 40px; display: grid; place-items: center; margin-bottom: 24px; border: 1px solid rgba(255,255,255,.12); border-radius: 14px; color: var(--mint); background: rgba(169,244,237,.08); }
+    .feature-icon svg { width: 19px; height: 19px; }
+    .feature h3 { margin: 0 0 8px; font-size: 15px; letter-spacing: -.02em; }
+    .feature p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.65; }
+    .language-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 15px; }
+    .tag { padding: 6px 9px; border: 1px solid rgba(255,255,255,.1); border-radius: 999px; color: #c4c9d5; font-size: 10px; background: rgba(255,255,255,.035); }
+    .ai-section { display: grid; grid-template-columns: .9fr 1.1fr; align-items: center; gap: clamp(28px, 7vw, 88px); padding: 36px; border-radius: 32px; overflow: hidden; position: relative; }
+    .ai-section:before { content: ""; position: absolute; width: 450px; height: 450px; left: -90px; top: -130px; border-radius: 50%; background: rgba(202,117,89,.13); filter: blur(80px); pointer-events: none; }
+    .ai-copy,.chat { position: relative; }
+    .ai-copy p { color: #b8b6c0; max-width: 390px; font-size: 14px; line-height: 1.75; }
+    .santa-card { display: flex; align-items: center; gap: 15px; margin-top: 22px; }
+    .santa-orb { position: relative; width: 86px; height: 86px; flex: 0 0 auto; border: 3px solid rgba(248,217,178,.76); border-radius: 50%; overflow: hidden; box-shadow: 0 0 0 7px rgba(232,190,139,.08), 0 10px 38px rgba(0,0,0,.32); animation: santaWave 4.8s ease-in-out infinite; }
+    .santa-orb img { width: 100%; height: 100%; object-fit: cover; object-position: center 24%; }
+    .santa-orb:after { content:""; position:absolute; inset:0; border-radius:inherit; box-shadow: inset 0 0 20px rgba(255,255,255,.16); }
+    .santa-card strong { display:block; font-size: 13px; }.santa-card small { display:block; margin-top:5px; color: #b7b4c0; font-size: 11px; }
+    .chat { padding: 18px; border-radius: 22px; background: rgba(15,16,22,.75); border: 1px solid rgba(255,255,255,.11); box-shadow: 0 20px 60px rgba(0,0,0,.27); }
+    .chat-top { display:flex; align-items:center; gap:10px; padding-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,.08); }
+    .chat-top img { width: 36px; height: 36px; border-radius: 50%; object-fit: cover; object-position: center 24%; }
+    .chat-top b { display:block; font-size: 12px; }.chat-top small { color: #a7a8b2; font-size: 10px; }
+    .chat-live { margin-left:auto; color: #b4f7da; font-size: 9px; }
+    .messages { display:flex; flex-direction:column; gap:10px; padding: 16px 0; min-height: 152px; max-height:260px; overflow:auto; scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.2) transparent; }
+    .bubble { max-width: 85%; padding: 10px 12px; border-radius: 14px; font-size: 11px; line-height: 1.5; animation: appear .35s ease both; }
+    .bubble.santa { align-self:flex-start; color:#e3e3ea; background:rgba(255,255,255,.075); border-bottom-left-radius:4px; }
+    .bubble.user { align-self:flex-end; color:#111622; background:linear-gradient(120deg,#c2fff5,#99bbff); border-bottom-right-radius:4px; }
+    .playlist-result { display:flex; align-items:center; gap:11px; margin-top:2px; padding:10px; border-radius:13px; background:rgba(255,255,255,.055); animation: appear .4s ease both; }
+    .playlist-art { width:42px;height:42px;border-radius:9px;background:linear-gradient(145deg,#a64f32,#dda25e 55%,#32243a);display:grid;place-items:center;color:#fff;font-size:17px; }
+    .playlist-result b {display:block;font-size:10px}.playlist-result small {display:block;color:#a7aab8;font-size:9px;margin-top:4px}
+    .chat-form { display:flex; align-items:center; gap:7px; padding:7px; border:1px solid rgba(255,255,255,.1); border-radius:14px; background:rgba(255,255,255,.05); }
+    .chat-form input { flex:1; min-width:0; padding:8px; border:0; outline:0; color:var(--text); background:transparent; font-size:11px; }
+    .chat-form input::placeholder { color:#878b9b; }
+    .chat-form button { width:34px;height:34px;display:grid;place-items:center;border:0;border-radius:10px;color:#131820;background:var(--mint);cursor:pointer;transition:transform .2s ease; }
+    .chat-form button:hover { transform:scale(1.07); }
+    .chat-form button.mic { color:#dfe4ee;background:rgba(255,255,255,.09); }
+    .chat-form svg {width:16px;height:16px}
+    .chat-hint { min-height:13px; margin:7px 2px 0; color:#8e93a3; font-size:9px; }
+    .bottom-cta { display:flex; justify-content:space-between; align-items:center; gap:25px; padding:32px; border-radius:25px; background:linear-gradient(115deg,rgba(113,175,217,.14),rgba(151,115,208,.12)); }
+    .bottom-cta h2 { margin:0 0 8px; font-size:clamp(24px,3vw,36px); }.bottom-cta p { margin:0; color:var(--muted); font-size:12px; }
+    footer { display:flex; justify-content:space-between; gap:18px; padding:28px 0 35px; color:#818696; font-size:10px; }
+    footer nav { display:flex; gap:17px; }
+    .float-santa { position:fixed; z-index:20; right:22px; bottom:22px; width:58px;height:58px; padding:0; border:2px solid rgba(198,255,237,.75); border-radius:50%; overflow:hidden; background:#1e2a3b; box-shadow:0 8px 30px rgba(0,0,0,.4),0 0 22px rgba(134,242,222,.18); cursor:pointer; animation:float 5s ease-in-out infinite; transition:transform .2s ease; }
+    .float-santa:hover { transform:scale(1.08); }.float-santa img {width:100%;height:100%;object-fit:cover;object-position:center 24%;}
+    .float-santa:after { content:""; position:absolute; inset:0; border-radius:inherit; box-shadow:inset 0 0 15px rgba(255,255,255,.22); }
+    .toast { position:fixed; z-index:21; right:90px; bottom:31px; max-width:240px; padding:11px 14px; border-radius:14px; color:#edf0f8; background:rgba(27,29,39,.9); border:1px solid var(--line); backdrop-filter:blur(18px); font-size:11px; opacity:0; transform:translateY(7px); pointer-events:none; transition:opacity .2s ease,transform .2s ease; }
+    .toast.show {opacity:1;transform:translateY(0)}
+    .reveal { opacity:0; transform:translateY(20px); transition:opacity .7s ease,transform .7s cubic-bezier(.2,.8,.2,1); }
+    .reveal.visible { opacity:1; transform:translateY(0); }
+    @keyframes float { 0%,100% { transform:translateY(0) rotateY(-5deg) rotateX(1deg); } 50% { transform:translateY(-9px) rotateY(-3deg) rotateX(1deg); } }
+    @keyframes breathe { to { opacity:.52; transform:scale(1.12); } }
+    @keyframes island { 0%,100% { transform:translateY(0) scale(1); } 50% { transform:translateY(-3px) scale(1.015); } }
+    @keyframes santaWave { 0%,86%,100% { transform:rotate(0) translateY(0); } 90% { transform:rotate(-5deg) translateY(-2px); } 94% { transform:rotate(5deg) translateY(-1px); } 98% { transform:rotate(-2deg); } }
+    @keyframes appear { from { opacity:0; transform:translateY(7px); } to {opacity:1;transform:translateY(0)} }
+    @media (max-width: 900px) {
+      .hero { grid-template-columns:1fr; min-height:auto; padding:60px 0 42px; }
+      .hero-copy { max-width:680px; }.preview-wrap { width:min(660px,100%); margin:0 auto; }
+      .feature-grid { grid-template-columns:repeat(2,1fr); }
+      .ai-section { grid-template-columns:1fr; padding:28px; }
+    }
+    @media (max-width: 600px) {
+      .wrap { width:min(100% - 30px, 500px); }
+      .nav { height:70px; }.nav-links { display:none; }.nav .button { padding:10px 13px; font-size:11px; }
+      .brand { font-size:15px; }.brand img { width:34px;height:34px;border-radius:11px; }
+      .hero { gap:40px; padding-top:48px; }.lead { font-size:14px; }.hero-actions .button { flex:1; }
+      .app-window { padding:9px; border-radius:19px; }.app-surface { grid-template-columns:82px 1fr; min-height:320px; }.app-side { padding:11px 7px; }.app-main { padding:13px 11px; }
+      .side-item { font-size:7px; padding:7px 5px; }.side-user { gap:5px; font-size:8px; }.side-user img {width:20px;height:20px;}
+      .island { right:10%; top:-17px; }.section { padding:65px 0; }.feature-grid { grid-template-columns:1fr; }.feature { min-height:170px; }
+      .ai-section { padding:22px 16px; border-radius:25px; }.bottom-cta { align-items:flex-start; flex-direction:column; padding:24px; }
+      footer { flex-direction:column; }.toast { right:90px; left:15px; bottom:89px; max-width:none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { scroll-behavior:auto!important; animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+      .reveal { opacity:1; transform:none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="ambient" aria-hidden="true"></div>
+  <header class="wrap nav">
+    <a class="brand" href="#top" aria-label="Aura Tune home"><img src="assets/aura-tune-icon.jpg" alt=""><span>Aura Tune</span></a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#features">Features</a><a href="#intelligence">Aura Intelligence</a><a href="#install">Install</a>
+    </nav>
+    <a class="button" href="https://github.com/radiantrahul/aura-tune-mac/releases/latest/download/Aura-Tune-1.0.0.dmg">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Download for Mac
+    </a>
+  </header>
+
+  <main id="top">
+    <section class="wrap hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="dot"></span> A music player designed for your Mac</div>
+        <h1><span>Aura Tune</span><br>for Mac.</h1>
+        <p class="lead">Find your next favorite, follow the lyrics, and let the colors of every song fill your space. Meet Aura Tune for Mac.</p>
+        <div class="hero-actions">
+          <a class="button" href="https://github.com/radiantrahul/aura-tune-mac/releases/latest/download/Aura-Tune-1.0.0.dmg">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Download the DMG
+          </a>
+          <a class="button ghost" href="#features">Explore Aura Tune</a>
+        </div>
+        <div class="download-meta">macOS app · Version 1.0.0 · 168 MB</div>
+        <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 3 4.5 6v5.5c0 4.5 3 7.8 7.5 9.5 4.5-1.7 7.5-5 7.5-9.5V6L12 3Z"/><path d="m9 12 2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>Built for Mac. Your music stays yours.</div>
+      </div>
+
+      <div class="preview-wrap" aria-label="Aura Tune app preview">
+        <div class="preview-glow"></div>
+        <div class="island"><img src="assets/aura-tune-icon.jpg" alt=""><div><b style="display:block;font-size:9px">Now playing</b><small>Maate Vinadhuga · Sid Sriram</small></div><span style="color:#b7c6ff;font-size:12px">Ⅱ</span></div>
+        <div class="app-window glass">
+          <div class="window-top"><i class="traffic"></i><span>Aura Tune</span></div>
+          <div class="app-surface">
+            <aside class="app-side">
+              <div class="side-user"><img src="assets/aura-tune-icon.jpg" alt=""><span>Welcome</span></div>
+              <div class="side-label">YOUR SPACE</div>
+              <div class="side-item active">▣ &nbsp; Home</div><div class="side-item">♫ &nbsp; Explore</div><div class="side-item">⌕ &nbsp; Search</div><div class="side-item">▧ &nbsp; Your Library</div><div class="side-item">≡ &nbsp; Playlists</div>
+            </aside>
+            <div class="app-main">
+              <div class="mock-search">⌕ &nbsp; Search songs, artists, albums…</div>
+              <div class="app-heading">Find your next favorite</div><div class="app-sub">Your music, tuned to you.</div>
+              <div class="mock-title">Quick picks by language</div>
+              <div class="album-row"><div class="album"><b>Telugu<br>Popular hits</b></div><div class="album"><b>Hindi<br>Popular hits</b></div><div class="album"><b>Tamil<br>Popular hits</b></div></div>
+              <div class="mock-title">Continue listening</div>
+              <div class="album-row"><div class="album"><b>Made for your mood</b></div><div class="album"><b>Most listened</b></div><div class="album"><b>New favorites</b></div></div>
+              <div class="mock-player"><div class="mock-cover"></div><div class="mock-track"><b>Maate Vinadhuga</b><small>Sid Sriram · Aura Audio</small></div><div class="mock-controls">‹ &nbsp;Ⅱ &nbsp;›</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="features" class="wrap section">
+      <div class="section-head reveal">
+        <div class="eyebrow"><span class="dot"></span> Made for the way you listen</div>
+        <h2>Little details.<br>More music.</h2>
+        <p>Move from discovery to listening without losing the feeling of the song.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16M4 12h16M4 19h10" stroke-linecap="round"/><circle cx="18" cy="18" r="3"/></svg></div><h3>Find a sound that feels like you</h3><p>Explore popular playlists by language, follow your listening history, and discover mixes from the singers you return to.</p><div class="language-tags"><span class="tag">Telugu</span><span class="tag">Hindi</span><span class="tag">Tamil</span><span class="tag">Kannada</span><span class="tag">Malayalam</span><span class="tag">English</span></div></article>
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4zM8 9h8m-8 4h6" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Lyrics that stay in sync</h3><p>Keep the current line in view, follow along as the song plays, and scroll down for details about the track.</p></article>
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v18M5 7v10m14-10v10M2 10v4m20-4v4" stroke-linecap="round"/></svg></div><h3>Album colors, all around</h3><p>Soft ambient lighting takes its cue from the artwork and moves gently while your music plays.</p></article>
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="14" rx="6"/><path d="M8 12h.01M12 12h.01m4 0h.01" stroke-linecap="round"/></svg></div><h3>Controls close at hand</h3><p>Use the Mac menu bar and a movable Dynamic Island style player to pause, skip, and check what’s playing.</p></article>
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v4m0 10v4M4.9 4.9l2.8 2.8m8.6 8.6 2.8 2.8M3 12h4m10 0h4M4.9 19.1l2.8-2.8m8.6-8.6 2.8-2.8" stroke-linecap="round"/><circle cx="12" cy="12" r="4"/></svg></div><h3>Your sound, your settings</h3><p>Choose Data Saver, Normal, Best, or Aura Audio Peak. Adjust playback speed, equalizer, theme, and the gap between songs.</p></article>
+        <article class="feature glass reveal"><div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7" stroke-linecap="round" stroke-linejoin="round"/></svg></div><h3>Pick up right where you were</h3><p>History, queue, local music, and saved playlists help make your library feel like home on Mac.</p></article>
+      </div>
+    </section>
+
+    <section id="intelligence" class="wrap section">
+      <div class="ai-section glass reveal">
+        <div class="ai-copy">
+          <div class="eyebrow"><span class="dot" style="background:#ffd49b;box-shadow:0 0 18px #ffd49b"></span> Aura Intelligence</div>
+          <h2>Tell Santa the mood.<br>Get a playlist.</h2>
+          <p>A friendly holiday helper makes playlist discovery feel easy. Type a mood or ask by voice, and get a mix to start from. Voice input asks for microphone permission first.</p>
+          <div class="santa-card"><div class="santa-orb"><img src="assets/aura-intelligence-santa.jpg" alt="Santa waving hello"></div><div><strong>Hi! I’m Aura Intelligence</strong><small>What would you like to listen to?</small></div></div>
+        </div>
+        <div class="chat" aria-label="Interactive Aura Intelligence preview">
+          <div class="chat-top"><img src="assets/aura-intelligence-santa.jpg" alt=""><div><b>Aura Intelligence</b><small>Santa’s playlist studio</small></div><span class="chat-live">● Here to help</span></div>
+          <div class="messages" id="messages" aria-live="polite">
+            <div class="bubble santa">Hi! 👋 Tell me the mood, language, or moment you have in mind.</div>
+            <div class="bubble user">Calm Telugu for a rainy evening</div>
+            <div class="bubble santa">That sounds lovely. I’d start with a mellow Telugu mix for the rain. Want to try another mood?</div>
+            <div class="playlist-result"><div class="playlist-art">♫</div><div><b>Rainy evening · Telugu</b><small>A gentle mix to get you started</small></div></div>
+          </div>
+          <form class="chat-form" id="chat-form">
+            <input id="mood-input" autocomplete="off" placeholder="Describe your mood…" aria-label="Describe a playlist mood">
+            <button class="mic" id="mic-button" type="button" aria-label="Use voice input" title="Use voice input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="3" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0m-7 7v3m-4 0h8" stroke-linecap="round"/></svg></button>
+            <button type="submit" aria-label="Send mood"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 14-7-5 14-3-6-6-1Z" stroke-linecap="round" stroke-linejoin="round"/><path d="m11 13 8-8" stroke-linecap="round"/></svg></button>
+          </form>
+          <div class="chat-hint" id="chat-hint">Interactive preview · sign in to Aura Tune to play your mix.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="install" class="wrap section">
+      <div class="bottom-cta glass reveal">
+        <div><div class="eyebrow"><span class="dot"></span> Ready when you are</div><h2>Bring Aura Tune to your Mac.</h2><p>Download the DMG, open it, and drag Aura Tune into Applications.</p></div>
+        <a class="button" href="https://github.com/radiantrahul/aura-tune-mac/releases/latest/download/Aura-Tune-1.0.0.dmg">Download Aura Tune <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap"><span>© <span id="year"></span> Aura Tune · Designed by Radiant</span><nav><a href="#features">Features</a><a href="#intelligence">Aura Intelligence</a><a href="https://github.com/radiantrahul/aura-tune-mac/releases/latest/download/Aura-Tune-1.0.0.dmg">DMG download</a></nav></footer>
+
+  <button class="float-santa" id="santa-button" aria-label="Ask Santa for a playlist"><img src="assets/aura-intelligence-santa.jpg" alt=""></button>
+  <div class="toast" id="toast" role="status">Hi! Scroll up to try Aura Intelligence.</div>
+  <script>
+    const year = document.querySelector('#year');
+    year.textContent = new Date().getFullYear();
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!reducedMotion && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver(entries => entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); }
+      }), { threshold: .12 });
+      document.querySelectorAll('.reveal').forEach((element, index) => {
+        element.style.transitionDelay = `${Math.min(index % 3, 2) * 75}ms`;
+        observer.observe(element);
+      });
+    } else document.querySelectorAll('.reveal').forEach(element => element.classList.add('visible'));
+
+    const form = document.querySelector('#chat-form');
+    const input = document.querySelector('#mood-input');
+    const messages = document.querySelector('#messages');
+    const hint = document.querySelector('#chat-hint');
+    const appendBubble = (text, kind) => {
+      const bubble = document.createElement('div');
+      bubble.className = `bubble ${kind}`;
+      bubble.textContent = text;
+      messages.append(bubble);
+      messages.scrollTop = messages.scrollHeight;
+    };
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      const mood = input.value.trim();
+      if (!mood) { input.focus(); return; }
+      appendBubble(mood, 'user');
+      input.value = '';
+      const label = mood.length > 34 ? `${mood.slice(0, 31)}…` : mood;
+      window.setTimeout(() => {
+        appendBubble(`I’d shape a playlist around “${label}.” Try Aura Tune to search and play a full mix.`, 'santa');
+        const result = document.createElement('div');
+        result.className = 'playlist-result';
+        result.innerHTML = '<div class="playlist-art">♫</div><div><b></b><small>A mood mix preview · Aura Tune</small></div>';
+        result.querySelector('b').textContent = `${label} mix`;
+        messages.append(result);
+        messages.scrollTop = messages.scrollHeight;
+      }, reducedMotion ? 0 : 350);
+    });
+
+    const micButton = document.querySelector('#mic-button');
+    let recognition = null;
+    let listening = false;
+    micButton.addEventListener('click', () => {
+      if (listening) { recognition?.stop(); return; }
+      const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!Recognition) { hint.textContent = 'Voice input is not available in this browser. Type your mood instead.'; return; }
+      recognition = new Recognition();
+      recognition.lang = navigator.language || 'en-US';
+      recognition.interimResults = false;
+      recognition.onstart = () => { listening = true; hint.textContent = 'Listening… click the microphone or press Escape to stop.'; };
+      recognition.onresult = event => {
+        input.value = event.results[0][0].transcript;
+        hint.textContent = 'Voice input added to your message.';
+        input.focus();
+      };
+      recognition.onerror = () => { hint.textContent = 'Could not use the microphone. Check browser permission or type your mood.'; };
+      recognition.onend = () => {
+        listening = false;
+        if (hint.textContent.startsWith('Listening…')) hint.textContent = 'Interactive preview · sign in to Aura Tune to play your mix.';
+      };
+      try { recognition.start(); } catch { hint.textContent = 'Could not start voice input. Type your mood instead.'; }
+    });
+    window.addEventListener('keydown', event => { if (event.key === 'Escape' && listening) recognition?.stop(); });
+
+    const toast = document.querySelector('#toast');
+    document.querySelector('#santa-button').addEventListener('click', () => {
+      document.querySelector('#intelligence').scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth' });
+      input.focus({ preventScroll: true });
+      toast.classList.add('show');
+      window.setTimeout(() => toast.classList.remove('show'), 2200);
+    });
+    document.addEventListener('pointermove', event => {
+      document.documentElement.style.setProperty('--px', `${event.clientX}px`);
+      document.documentElement.style.setProperty('--py', `${event.clientY}px`);
+    }, { passive: true });
+  </script>
+</body>
+</html>
